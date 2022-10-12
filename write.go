@@ -433,6 +433,7 @@ func (e *Epub) writeSections(rootEpubDir string) {
 			e.pkg.addToManifest(section.filename, relativePath, mediaTypeXhtml, "")
 
 			// Don't add pages without titles or the cover to the TOC
+
 			if section.xhtml.Title() != "" && section.filename != e.cover.xhtmlFilename {
 				e.toc.addSection(index, section.xhtml.Title(), relativePath)
 
@@ -441,8 +442,9 @@ func (e *Epub) writeSections(rootEpubDir string) {
 					for _, child := range *section.children {
 						index += 1
 						relativeSubPath := filepath.Join(xhtmlFolderName, child.filename)
-						e.toc.addSubSection(relativePath, index, child.xhtml.Title(), relativeSubPath)
-
+						if !e.ignoreSubSectionFromToc {
+							e.toc.addSubSection(relativePath, index, child.xhtml.Title(), relativeSubPath)
+						}
 						subSectionFilePath := filepath.Join(rootEpubDir, contentFolderName, xhtmlFolderName, child.filename)
 						child.xhtml.write(subSectionFilePath)
 
@@ -451,6 +453,7 @@ func (e *Epub) writeSections(rootEpubDir string) {
 						e.pkg.addToManifest(child.filename, relativeSubPath, mediaTypeXhtml, "")
 					}
 				}
+
 			}
 
 			index += 1

@@ -21,7 +21,6 @@ Basic usage:
 	if err != nil {
 		// handle error
 	}
-
 */
 package epub
 
@@ -134,7 +133,8 @@ type Epub struct {
 	sections []epubSection
 	title    string
 	// Table of contents
-	toc *toc
+	toc                     *toc
+	ignoreSubSectionFromToc bool
 }
 
 type epubCover struct {
@@ -571,4 +571,9 @@ func addMedia(client *http.Client, source string, internalFilename string, media
 		mediaFolderName,
 		internalFilename,
 	), nil
+}
+
+// Make a subsection not included in the toc.
+func (e *Epub) SetIgnoreSubSectionFromToc(ignore bool) {
+	e.ignoreSubSectionFromToc = ignore
 }
